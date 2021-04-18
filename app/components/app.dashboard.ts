@@ -18,6 +18,7 @@ import {NgSwitch, NgSwitchWhen, NgSwitchDefault} from 'angular2/src/common/direc
     bindings: [MongoService]
 })
 export class AppDashboard {
+  activeAccordion: string = null;
   constructor(mongo: MongoService) {
     this.mongo = mongo
     /*var col = new MongoCollection()

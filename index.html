@@ -1,48 +1,54 @@
 <html>
-  <head>
-    <title>MongoDB Sizing</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="node_modules/es6-shim/es6-shim.min.js"></script>
-    <script src="node_modules/systemjs/dist/system-polyfills.js"></script>
-    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
-    <script src="node_modules/systemjs/dist/system.src.js"></script>
-    <script src="node_modules/rxjs/bundles/Rx.js"></script>
-    <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
 
-    <script src="node_modules/jquery/dist/jquery.js"></script>
-    <script src="js/foundation.js"></script>
-    <script src="js/rj.min.js"></script>
-    <script src="js/bson.js"></script>
-    <script src="js/FileSaver.js"></script>
-    <script src="node_modules/intl/dist/Intl.min.js"></script>
-    <script src="node_modules/intl/locale-data/jsonp/en.js"></script>
-    <script src="node_modules/relaxed-json/relaxed-json.js"></script>
-    <script>
-      System.config({
-        packages: {
-          app: {
-            format: 'register',
-            defaultExtension: 'js'
-          }
+<head>
+  <title>MSIZER</title>
+  <link rel="icon" href="./assets/Asset-1@4x-1.png" sizes="32x32" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+  <script src="node_modules/systemjs/dist/system-polyfills.js"></script>
+  <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+  <script src="node_modules/systemjs/dist/system.src.js"></script>
+  <script src="node_modules/rxjs/bundles/Rx.js"></script>
+  <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+
+  <script src="node_modules/jquery/dist/jquery.js"></script>
+  <script src="js/foundation.js"></script>
+  <script src="js/rj.min.js"></script>
+  <script src="js/bson.js"></script>
+  <script src="js/FileSaver.js"></script>
+  <script src="node_modules/intl/dist/Intl.min.js"></script>
+  <script src="node_modules/intl/locale-data/jsonp/en.js"></script>
+  <script src="node_modules/relaxed-json/relaxed-json.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script>
+    System.config({
+      packages: {
+        app: {
+          format: 'register',
+          defaultExtension: 'js'
         }
-      });
-      System.import('app/main').then(null, console.error.bind(console));
-    </script>
+      }
+    });
+    System.import('app/main').then(null, console.error.bind(console));
+  </script>
 
-    <link rel="stylesheet" href="css/foundation.css" />
-    <link rel="stylesheet" href="css/app.css" />
-    <script type="text/javascript">
-      $( document ).ready(function() {
-         $(document).foundation();
-      });
-    </script>
+  <!-- <link rel="stylesheet" href="css/foundation.css" /> -->
+  <link rel="stylesheet" href="css/bootstrap.min.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(document).foundation();
+    });
+  </script>
 
-    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css" />
-  </head>
-  <body>
-    <div id="outer-wrap">
-      <mdb-dashboard>Loading</mdb-dashboard>
-    </div>
-  </body>
+  <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+</head>
+
+<body>
+  <div id="outer-wrap">
+    <mdb-dashboard>Loading</mdb-dashboard>
+  </div>
+</body>
+
 </html>
-

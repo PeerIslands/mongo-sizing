@@ -1,26 +1,24 @@
-<div class="row">
-  <label>#Shards
-    <input type="number" [(ngModel)]="mongo.shards" min="1" />
-  </label>
-</div>
-<hr/>
-<div class="row">
-  <label>Storage engine
-    <select [(ngModel)]="mongo.engine" (change)="mongo.engine = $event.target.value; mongo.compute()" >
+<div class="configuration p-3">
+  <div class="form-group">
+    <label>Shard Count</label>
+    <input class="form-control" type="number" [(ngModel)]="mongo.shards" min="1" placeholder="Number of Shards">
+  </div>
+  <div class="form-group">
+    <label>Storage Engine</label>
+    <select class="form-control" [(ngModel)]="mongo.engine"
+      (change)="mongo.engine = $event.target.value; mongo.compute()">
       <option *ngFor="#engine of engines" value="{{engine}}">{{engine}}</option>
     </select>
-  </label>
-</div>
-<div class="row">
-  <label>Compression
-    <select [(ngModel)]="mongo.compression" (change)="mongo.compression = $event.target.value; mongo.compute()">
+  </div>
+  <div class="form-group">
+    <label>Compression</label>
+    <select class="form-control" [(ngModel)]="mongo.compression"
+      (change)="mongo.compression = $event.target.value; mongo.compute()">
       <option *ngFor="#compression of compressions" value="{{compression}}">{{compression}}</option>
     </select>
-  </label>
-</div>
-<hr/>
-<div class="row">
-  <label>Oplog size GB
-    <input type="number" [(ngModel)]="mongo.oplog" min="1" (change)="mongo.compute()" />
-  </label>
+  </div>
+  <div class="form-group">
+    <label>Oplog Size GB</label>
+    <input class="form-control" type="number" [(ngModel)]="mongo.oplog" min="1" (change)="mongo.compute()" />
+  </div>
 </div>

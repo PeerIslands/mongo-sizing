@@ -1,8 +1,11 @@
-<div class="row">
+<div class="new-collection">
   <div class="form-group">
-    <input type="text" placeholder="Name" [(ngModel)]="name" />
-    <input type="text" placeholder="Index1;Index2;Index3" [(ngModel)]="indexes" />
-    <textarea placeholder="Sample document" rows=8 [(ngModel)]="json"></textarea>
-    <button (click)="save()"  type="button" class="success button float-right">Add</button>
+    <input class="form-control" type="text" placeholder="Name" [(ngModel)]="name" />
+  </div>
+  <div class="form-group">
+    <input class="form-control" type="text" placeholder="Index1;Index2;Index3" [(ngModel)]="indexes" />
+  </div>
+  <div class="form-group">
+    <textarea class="form-control" placeholder="Sample document" rows=8 [(ngModel)]="json"></textarea>
   </div>
 </div>

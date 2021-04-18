@@ -1,68 +1,101 @@
-<div class="off-canvas-wrapper" style="min-height: 100%">
-  <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
-    <div class="off-canvas position-left reveal-for-large" id="offCanvas" data-off-canvas>
-      <div class="title-bar show-for-large show-for-xlarge">
-        <div class="title-bar-left">
-          <span class="title-bar-title">MongoDB Sizing Tool</span>
+<div class="dashborad">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-light border-bottom">
+    <div class="d-flex justify-content-between w-100 align-items-center">
+      <div class="d-flex" style="width: 110px;">
+        <img src="./../../assets/PeerIslands-Logo_Color_RGB-e1574207497308.png" class="logo peerislands-logo pr-2" />
+        <img src="./../../assets/mongodb-logo.png" class="logo pl-2" />
+      </div>
+      <div><h4 class="text-success">MSIZER</h4></div>
+      <div class="dropleft">
+        <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <span><i class="fa fa-cog"></i></span>
+        </button>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#newCollection"><i class="fa fa-plus"></i>
+            New Collection</a>
+          <a *ngIf="mongo.collections.length > 0" class="dropdown-item" href="#" (click)='save()'><i
+              class="fa fa-file"></i> Save Project</a>
+          <a *ngIf="mongo.collections.length <= 0" class="dropdown-item" href="#" (click)='load()'><i
+              class="fa fa-file"></i> Load Project</a>
         </div>
       </div>
-      <ul class="mobile-ofc vertical menu">
-        <li style="padding: 15px;"><mdb-configuration>Loading...</mdb-configuration></li>
-      </ul>
     </div>
-    <div class="off-canvas-content" data-off-canvas-content>
-      <div data-sticky-container>
-        <div class="title-bar width-hack" data-sticky data-options="marginTop:0;" style="width:100% !important; max-width: 100% !important;">
-          <div class="title-bar-left hide-for-large hide-for-xlarge" >
-            <button class="menu-icon" type="button" data-open="offCanvas"></button>
-            <span class="title-bar-title">MongoDB sizing tool</span>
+  </nav>
+
+  <div class="d-flex" style="height: calc(100vh - 63px);">
+    <div class="side-menu border-right" style="width: 350px;">
+      <p class="config-header border-bottom text-center m-0 p-3">DB SETTINGS</p>
+      <mdb-configuration>Loading...</mdb-configuration>
+    </div>
+    <div class="w-100">
+
+      <div class="d-flex justify-content-center align-items-center h-100" *ngIf="mongo.collections.length == 0">
+        <div class="text-center cursor-pointer" data-toggle="modal" data-target="#newCollection">
+          <div class="mb-2"><i class="fa fa-5 fa-5x fa-file-text-o"></i></div>
+          <div>New Collection</div>
+          <p class="text-muted">Please click on new collection to create a document schema and calculate the size of the document</p>
+        </div>
+      </div>
+
+      <div *ngIf="mongo.collections.length > 0">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-collection-tab" data-toggle="tab" href="#nav-collection"
+              role="tab" aria-controls="nav-collection" aria-selected="true">Collection</a>
+            <a class="nav-item nav-link" id="nav-sizing-tab" data-toggle="tab" href="#nav-sizing" role="tab"
+              aria-controls="nav-sizing" aria-selected="false">Sizing</a>
           </div>
-          <div class="title-bar-left show-for-large-up">
-            <span class="title-bar-title" style="color: rgba(66, 73, 79, 0);">|</span>
+        </nav>
+        <div class="tab-content p-2" id="nav-tabContent">
+          <div class="tab-pane fade show active" id="nav-collection" role="tabpanel"
+            aria-labelledby="nav-collection-tab">
+            <!-- <button type="button" class="btn btn-dark pull-right" data-toggle="modal" data-target="#newCollection">
+              <i class="fa fa-plus"></i> New Collection</button> -->
+
+            <div class="list-group" *ngFor="#collection of mongo.collections">
+              <button type="button" class="list-group-item list-group-item-action"
+                [class.text-success]="activeAccordion === collection.name"
+                (click)="activeAccordion = (activeAccordion === collection.name ? null : collection.name)">
+                <span *ngIf="activeAccordion !== collection.name"><i class="fa fa-chevron-right"
+                    aria-hidden="true"></i></span>
+                <span *ngIf="activeAccordion === collection.name"><i class="fa fa-chevron-down"
+                    aria-hidden="true"></i></span>
+                {{collection.name}}
+              </button>
+              <div class="content" *ngIf="activeAccordion === collection.name">
+                <mdb-collection [collection]="collection">Loading...</mdb-collection>
+              </div>
+            </div>
+
           </div>
-          <div class="top-bar-right">
-            <p class="align-right">
-              <a class="tiny data-dropdown-menu button" style="white-space: pre" data-toggle="action-panel"><i class="fa fa-cog"></i></a>
-            </p>
-            <ul id="action-panel" class="dropdown-pane li-border" id="action-panel" data-dropdown data-close-on-click=true>
-              <li><a href="#" data-open="newEntry"><i class="fa fa-plus"></i> New Collection</a></li>
-              <li *ngIf="mongo.collections.length > 0" ><a href="#" (click)='save()'><i class="fa fa-file"></i> Save Project</a></li>
-              <li *ngIf="mongo.collections.length <= 0" ><a href="#" (click)='load()'><i class="fa fa-file"></i> Load Project</a></li>
-            </ul>
+          <div class="tab-pane fade" id="nav-sizing" role="tabpanel" aria-labelledby="nav-sizing-tab">
+            <mdb-sizing>Loading...</mdb-sizing>
           </div>
         </div>
       </div>
 
+    </div>
+  </div>
+</div>
 
-      <div class="reveal" id="newEntry" data-reveal>
-        <h3>New collection</h3>
-        <hr />
-        <mdb-newentry>Loading</mdb-newentry>
-        <button class="close-button" data-close aria-label="Close modal" type="button">
+<!-- Modal -->
+<div class="modal fade" id="newCollection" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-success" id="exampleModalLongTitle">New collection</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-
-      <div>
-        <div *ngIf="mongo.collections.length == 0">
-          <p class="float-center" style="font-size: 9em; margin: auto;text-align: center; vertical-align: middle; padding-top: 15%; min-height: 700;">
-          <a data-open="newEntry"><i class="fa fa-5 fa-file-text-o"></i><br /><span style="font-size: 20px">new collection</span></a></p>
-        </div>
-        <div *ngIf="mongo.collections.length > 0">
-          <ul class="tabs" data-tabs>
-            <li *ngFor="#collection of mongo.collections" class="tabs-title"><a href="{{'#' + collection.name}}" aria-selected="true" style="color: rgb(40, 110, 35);">{{collection.name}}</a></li>
-            <li style="display: table; height: 50px; float: right; margin-right: 30px"><a data-open="newEntry" style="vertical-align: middle; display: table-cell;"><i class="fa fa-plus"></i></a></li>
-            <li class="tabs-title"><a href="#sizingPanel" (click)="mongo.compute()">Sizing</a></li>
-          </ul>
-          <div class="tabs-content" style="border-bottom: 0; min-height: 700">
-            <div class="tabs-panel" *ngFor="#collection of mongo.collections" id="{{collection.name}}">
-              <mdb-collection [collection]="collection">Loading...</mdb-collection>
-            </div>
-            <div class="tabs-panel" id="sizingPanel">
-              <mdb-sizing>Loading...</mdb-sizing>
-            </div>
-          </div>
-        </div>
+      <div class="modal-body">
+        <mdb-newentry #newCollection>Loading</mdb-newentry>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+        <button (click)="newCollection.save()" data-dismiss="modal" type="button" class="btn btn-success">Add</button>
       </div>
     </div>
   </div>

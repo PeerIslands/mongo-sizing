@@ -23,7 +23,7 @@ export class MongoService {
    */
   public addCollection(col: MongoCollection) {
     col.validate()
-    col.service = this
+    col.service = this;
     this.collections.push(col)
     this.compute()
   }

@@ -1,33 +1,63 @@
-<div class="row">
-  <div class="medium-6 column">
-    <div *ngFor="#collection of mongo.collections">
-      <table>
+<div class="sizing">
+  <div class="card w-100">
+    <p class="card-header">Collection Details</p>
+    <div class="card-body">
+      <table class="table table-striped">
         <thead>
-          <td colspan=2>collection {{collection.name}}</td>
+          <tr>
+            <th scope="col">Collection Name</th>
+            <th scope="col">Estd No of Documents</th>
+            <th scope="col">Estd Documents in memory</th>
+            <th scope="col">Estd No of indexes</th>
+            <th scope="col">Avg Documents size</th>
+            <th scope="col">Estd data size</th>
+            <th scope="col">Estd index size</th>
+            <th scope="col">Estd storage size</th>
+            <th scope="col">Estd memory requirements</th>
+          </tr>
         </thead>
-        <tr><td>Estimated number of document</td><td>{{collection.numberOfDocument | number}}</td></tr>
-        <tr><td>Estimated documents in memory</td><td>{{collection.numberOfDocumentInMemory | number}}</td></tr>
-        <tr><td>Estimated number of indexes</td><td>{{collection.indexes.length | number}}</td></tr>
-        <tr><td>Average document size</td><td>{{mongo.formatSize(collection.averageDocumentSize)}}</td></tr>
-        <tr><td>Estimated data size</td><td>{{mongo.formatSize(collection.dataSize)}}</td></tr>
-        <tr><td>Estimated index size</td><td>{{mongo.formatSize(collection.indexSize)}}</td></tr>
-        <tr><td>Estimated storage size</td><td>{{mongo.formatSize(collection.storageSize)}}</td></tr>
-        <tr><td>Estimated memory requirements</td><td>{{mongo.formatSize(collection.memoryRequirement)}}</td></tr>
+        <tbody>
+          <tr *ngFor="#collection of mongo.collections">
+            <td>{{collection.name}}</td>
+            <td>{{collection.numberOfDocument | number}}</td>
+            <td>{{collection.numberOfDocumentInMemory | number}}</td>
+            <td>{{collection.indexes.length | number}}</td>
+            <td>{{mongo.formatSize(collection.averageDocumentSize)}}</td>
+            <td>{{mongo.formatSize(collection.dataSize)}}</td>
+            <td>{{mongo.formatSize(collection.indexSize)}}</td>
+            <td>{{mongo.formatSize(collection.storageSize)}}</td>
+            <td>{{mongo.formatSize(collection.memoryRequirement)}}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
-  <div class="medium-6 column">
-    <div *ngFor="#shard of mongo.getShards()">
-      <table>
+  <div class="card mt-2 w-100">
+    <p class="card-header">Shard Details</p>
+    <div class="card-body">
+      <table class="table table-striped">
         <thead>
-          <td colspan=2>Shard {{shard.id + 1}}</td>
+          <tr>
+            <th scope="col">Shard Number</th>
+            <th scope="col">Estd No of Documents</th>
+            <th scope="col">Estd No of indexes</th>
+            <th scope="col">Estd data size</th>
+            <th scope="col">Estd index size</th>
+            <th scope="col">Estd storage size</th>
+            <th scope="col">Estd memory requirements</th>
+          </tr>
         </thead>
-        <tr><td>Estimated number of documents</td><td>{{(mongo.numberOfDocument / mongo.shards) | number}}</td></tr>
-        <tr><td>Estimated number of indexes</td><td>{{(mongo.numberOfIndexes)}}</td></tr>
-        <tr><td>Estimated data size</td><td>{{mongo.formatSize(mongo.dataSize / mongo.shards)}}</td></tr>
-        <tr><td>Estimated index size</td><td>{{mongo.formatSize(mongo.indexSize / mongo.shards)}}</td></tr>
-        <tr><td>Estimated storage size</td><td>{{mongo.formatSize(mongo.storageSize / mongo.shards)}}</td></tr>
-        <tr><td>Estimated memory requirements</td><td>{{mongo.formatSize(mongo.memoryRequirement / mongo.shards)}}</td></tr>
+        <tbody>
+          <tr *ngFor="#shard of mongo.getShards()">
+            <td>{{shard.id + 1}}</td>
+            <td>{{(mongo.numberOfDocument / mongo.shards) | number}}</td>
+            <td>{{(mongo.numberOfIndexes)}}</td>
+            <td>{{mongo.formatSize(mongo.dataSize / mongo.shards)}}</td>
+            <td>{{mongo.formatSize(mongo.indexSize / mongo.shards)}}</td>
+            <td>{{mongo.formatSize(mongo.storageSize / mongo.shards)}}</td>
+            <td>{{mongo.formatSize(mongo.memoryRequirement / mongo.shards)}}</td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>

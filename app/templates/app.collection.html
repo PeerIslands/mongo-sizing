@@ -1,88 +1,144 @@
-<div class="row">
+<div class="collection">
+  <div class="d-flex p-2 justify-content-between">
 
-   <div class="reveal" id="newIndex-{{collection.name}}" data-reveal>
-     <h3>New index</h3>
-     <hr />
-     <mdb-newindex [collection]="collection">Loading</mdb-newindex>
-     <button class="close-button" data-close aria-label="Close modal" type="button">
-       <span aria-hidden="true">&times;</span>
-     </button>
-   </div>
-
-   <div class="reveal" id="editDocument-{{collection.name}}" data-reveal>
-     <h3>Edit sample document</h3>
-     <hr />
-     <mdb-editdocument [collection]="collection">Loading</mdb-editdocument>
-     <button class="close-button" data-close aria-label="Close modal" type="button">
-       <span aria-hidden="true">&times;</span>
-     </button>
-   </div>
-
-  <div class="medium-6 column">
-    <h5>Sample document</h5>
-    <a href="#" (click)='openEditDocument()'><pre innerHTML="{{syntaxHighlight(collection.json)}}"></pre></a>
-    <hr />
-    <h5>Indexes</h5>
-    <div *ngFor="#index of collection.indexes">
-      <div class="row">
-        <div class="medium-6 columns">
-          <pre innerHTML="{{syntaxHighlight(index.json)}}"></pre>
+    <div class="card w-100">
+      <p class="card-header">Sample Document</p>
+      <div class="card-body">
+        <div class="cursor-pointer" data-toggle="modal" data-target="#editIndex">
+          <pre innerHTML="{{syntaxHighlight(collection.json)}}"></pre>
         </div>
-        <div class="medium-6 columns">
-          <div>
-            <ul class="vertical dropdown menu float-right" data-dropdown-menu style="max-width: 300px;">
-              <li>
-              <a href="#">
-                <span style="color: grey; white-space:pre">{{mongo.formatSize(index.averageKeySize)}}   </span>
-                <span class="info"><i class="fa fa-wrench"></i></span>
-              </a>
-              <ul class="menu">
-                <li><a (click)="openNewIndex()">add</a></li>
-                <li><a (click)="collection.removeIndex(index.json)">remove</a></li>
-              </ul>
-              </li>
-            </ul>
+      </div>
+    </div>
+
+    <div class="card ml-2 w-100">
+      <p class="card-header">Indexes</p>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Index</th>
+              <th scope="col">Bytes</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="#index of collection.indexes">
+              <td>
+                <pre innerHTML="{{syntaxHighlight(index.json)}}"></pre>
+              </td>
+              <td>{{mongo.formatSize(index.averageKeySize)}}</td>
+              <td class="text-center">
+                <button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#addIndex"><i
+                    class="fa fa-plus" aria-hidden="true"></i></button>
+                <button type="button" class="btn btn-light btn-sm" (click)="collection.removeIndex(index.json)"><i
+                    class="fa fa-trash" aria-hidden="true"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="ml-2 w-100">
+      <div class="card">
+        <p class="card-header">Statistics</p>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-1">
+            <div><label class="text-right middle">Average document size</label></div>
+            <div><input class="form-control" type='text' readonly
+                [value]="mongo.formatSize(collection.averageDocumentSize)" /></div>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <div><label class="text-right middle">Number of document</label></div>
+            <div><input class="form-control" type='number' min="1" [(ngModel)]="collection.numberOfDocument" /></div>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <div><label class="text-right middle">Documents in memory</label></div>
+            <div><input class="form-control" type='number' min="1" [(ngModel)]="collection.numberOfDocumentInMemory" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-1">
+        <p class="card-header">Sizing</p>
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <div><label class="text-right middle">Estimated data size</label></div>
+            <div>
+              <p>{{mongo.formatSize(collection.dataSize)}}</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div><label class="text-right middle">Estimated index size</label></div>
+            <div>
+              <p>{{mongo.formatSize(collection.indexSize)}}</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div><label class="text-right middle">Estimated documents storage size</label></div>
+            <div>
+              <p>{{mongo.formatSize(collection.storageSize)}}</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div><label class="text-right middle">Estimated collection storage size</label>
+            </div>
+            <div>
+              <p>{{mongo.formatSize(collection.totalStorageSize)}}</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div><label class="text-right middle">Estimated memory usage</label></div>
+            <div>
+              <p>{{mongo.formatSize(collection.memoryRequirement)}}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="medium-6 column">
-    <div class="">
-      <h5 style="padding-left: 25px">Statistics</h5>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Average document size</label></div>
-        <div class="small-5 columns"><input class="medium-7" type='text' readonly [value]="mongo.formatSize(collection.averageDocumentSize)" /></div>
-      </div>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Number of document</label></div>
-        <div class="small-5 columns"><input class="medium-7" type='number' min="1" [(ngModel)]="collection.numberOfDocument" /></div>
-      </div>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Documents in memory</label></div>
-        <div class="small-5 columns"><input class="medium-7" type='number' min="1" [(ngModel)]="collection.numberOfDocumentInMemory" /></div>
-      </div>
+</div>
 
-      <h5 style="padding-left: 25px;">Sizing</h5>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Estimated data size</label></div>
-        <div class="small-5 columns"><p class="mimic">{{mongo.formatSize(collection.dataSize)}}</p></div>
+
+<div class="modal fade" id="addIndex" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-success" id="exampleModalLongTitle">New Index</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Estimated index size</label></div>
-        <div class="small-5 columns"><p class="mimic">{{mongo.formatSize(collection.indexSize)}}</p></div>
+      <div class="modal-body">
+        <mdb-newindex #newIndex [collection]="collection">Loading</mdb-newindex>
       </div>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Estimated documents storage size</label></div>
-        <div class="small-5 columns"><p class="mimic">{{mongo.formatSize(collection.storageSize)}}</p></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+        <button (click)="newIndex.save()" data-dismiss="modal" type="button" class="btn btn-success">Add</button>
       </div>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Estimated collection storage size</label></div>
-        <div class="small-5 columns"><p class="mimic">{{mongo.formatSize(collection.totalStorageSize)}}</p></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="editIndex" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-success" id="exampleModalLongTitle">Edit sample document</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <div class="row">
-        <div class="small-7 columns"><label class="text-right middle">Estimated memory usage</label></div>
-        <div class="small-5 columns"><p class="mimic">{{mongo.formatSize(collection.memoryRequirement)}}</p></div>
+      <div class="modal-body">
+        <mdb-editdocument #editdocument [collection]="collection">Loading</mdb-editdocument>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+        <button (click)="editdocument.save()" data-dismiss="modal" type="button" class="btn btn-success">Add</button>
       </div>
     </div>
   </div>

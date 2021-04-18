@@ -1,83 +1,73 @@
-.title-bar {
-  background-color: rgba(66,73,79,0.94);
-  color: white;
-  height: 45px;
-}
-
-.off-canvas {
-  background-color: white;
-  min-height: 100%;
-}
-
-pre { overflow: auto; }
-.string { color: rgba(0, 128, 0, 0.72); }
-.number { color: rgba(255, 140, 0, 0.71); }
-.boolean { color:rgba(0, 0, 255, 0.62); }
-.null { color: rgba(255, 0, 255, 0.66); }
-.key { color: rgba(0, 0, 0, 0.57); font-weight: 'bold' }
-
-table tbody tr {
-  background-color: rgba(66,73,79,0.001) !important;
-}
-
-.tabs-content {
-  border: none;
-}
-
-.tabs-title > a:focus, .tabs-title > a[aria-selected='true'] {
-  background-color: #ECECEC;
-}
-
-.tabs {
-  border: none;
-  border-bottom: 1px solid #e6e6e6;
-}
-
-.dropdown.menu .is-dropdown-submenu-parent.is-down-arrow > a::after {
-  content: none; }
-
-.dropdown.menu .is-dropdown-submenu-parent.is-left-arrow > a::after {
-  content: none; }
-
-.dropdown.menu .is-dropdown-submenu-parent.is-right-arrow > a::after {
-  content: none; }
-
-.off-canvas-content, .off-canvas-content {
-  box-shadow: none;
-}
-
-.mimic {
-  color: black;
-  margin: 0 0 1rem;
-  padding: 0.5625rem 0;
-}
-
-label {
-  color: gray;
-}
-
-.width-hack {
-  max-width: 100% !important;
-}
-
-.is-stuck .top-bar-right {
-  display: hidden;
-}
-
 body {
-  overflow: hidden;
+  font-size: 14px;
 }
-#outer-wrap {
-  -webkit-overflow-scrolling: touch;
-  height: 100vh;
-  overflow: auto;
-}
-
-.position-left.reveal-for-large {
-  position: absolute;
+a,
+a:hover {
+  color: #4c4e51;
 }
 
-.li-border li {
-  padding-bottom: 5px;
-  padding-top: 5px;
+.table thead th {
+  font-weight: 400;
+}
+
+.card {
+  border-radius: 0;
+}
+
+.nav-link {
+  padding: 15px 1rem;
+}
+
+.card-header,
+.config-header {
+  background-color: transparent;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  border-color: transparent;
+  color: green;
+  margin-bottom: 0;
+  border-bottom: 2px solid;
+}
+
+button.list-group-item.list-group-item-action {
+  border-radius: 0;
+  background-color: #f8f9fa;
+  margin-top: 5px;
+  text-transform: capitalize;
+}
+.nav-tabs {
+  box-shadow: 1px 2px 4px 0 rgb(0 0 0 / 10%);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.logo {
+  width: 100px;
+  margin: auto;
+}
+
+.peerislands-logo {
+  border-right: 1px solid #bbbb7f;
+}
+
+td {
+  color: #8a8a8a;
+  font-weight: 400;
+}
+
+@media (min-width: 576px) {
+  .modal-dialog {
+    max-width: 700px;
+  }
 }
