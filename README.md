@@ -1,6 +1,6 @@
 # MongoDB Sizing Calculator
 
-This was originally written by [Gasparina Damien](http://github.com/dabz/) updated for use by the MongoDB Solutions Architecture team by [Michael Lynn](http://github.com/mrlynn).
+This was originally written by [Gasparina Damien](http://github.com/dabz/) updated for use by the MongoDB Solutions Architecture team by [Michael Lynn](http://github.com/mrlynn). Forked and updated the look and feel in the UI to make it more professional and use by PeerIslands team by [Rajesh Vinayagam](https://github.com/rajeshvinaygam-lab).
 
 ## Getting Started
 
@@ -35,8 +35,6 @@ npm start
 ```
 
 ## Using the Tool
-![Using the tool](mongo-sizing/mongosizing.gif)
-![alt text](https://github.com/mrlynn/mongo-sizing/blob/master/mongosizing.gif "Using MongoDB Sizing")
 
 1. To use this tool for a sizing exercise, you start by clicking 'New Collection'.
 
@@ -46,19 +44,12 @@ npm start
 3. Click the Sizing tab to view details of the sizing recommendations.
 4. Modify the number of shards, avg document count and other settings to view detailed statistics.
 
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
 ## Authors
 
 * **Damien Gasparina** - *Initial work* - [Github](https://github.com/DABZ)
 * **Michael Lynn** - *Minor Mods for MongoDB SA's* - [Github](https://github.com/mrlynn)
-
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Rajesh Vinayagam** - *Skinning and UI updates to make it more professional* - [Github](https://github.com/rajeshvinaygam-lab)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License
