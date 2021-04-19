@@ -49,6 +49,7 @@ npm start
 * **Damien Gasparina** - *Initial work* - [Github](https://github.com/DABZ)
 * **Michael Lynn** - *Minor Mods for MongoDB SA's* - [Github](https://github.com/mrlynn)
 * **Rajesh Vinayagam** - *Skinning and UI updates to make it more professional* - [Github](https://github.com/rajeshvinaygam-lab)
+* **Prakash Perumal** - *Skinning and UI updates to make it more professional* - [Github](https://github.com/tienprakash)
 
 ## License
 
