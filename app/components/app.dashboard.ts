@@ -8,14 +8,26 @@ import {MongoService} from '/app/services/mongo.service';
 import {MongoCollection} from '/app/services/collection.service';
 import {MongoIndex} from '/app/services/index.service';
 import {NgSwitch, NgSwitchWhen, NgSwitchDefault} from 'angular2/src/common/directives/ng_switch';
+import { CalculatorComponent } from '/app/components/app.calculator';
+import { MongoCalculatorService } from '/app/services/mongocalculator.service';
 
 @View({
-  directives: [ConfigurationComponent, NewCollectionComponent, CollectionComponent, SizingComponent, NgSwitch, NgSwitchWhen, NgSwitchDefault, NgIf],
+  directives: [
+    ConfigurationComponent,
+    NewCollectionComponent,
+    CollectionComponent,
+    SizingComponent,
+    CalculatorComponent,
+    NgSwitch,
+    NgSwitchWhen,
+    NgSwitchDefault,
+    NgIf
+  ],
   templateUrl: '/app/templates/app.dashboard.html',
 })
 @Component({
     selector: 'mdb-dashboard',
-    bindings: [MongoService]
+    bindings: [MongoService, MongoCalculatorService]
 })
 export class AppDashboard {
   activeAccordion: string = null;
