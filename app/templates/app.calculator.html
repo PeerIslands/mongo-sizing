@@ -1,11 +1,11 @@
 <div class="sizing">
   <div class="card w-100">
-    <p class="card-header">MongoDB Cluster Calculator</p>
+    <p class="card-header">Atlas Cluster Sizing Calculator</p>
     <div class="card-body">
       <div class="calculator">
         <div class="d-flex p-2 justify-content-start">
           <div class="ml-2 w-100">
-            <div class="card">
+            <div class="card" style="min-height: 315px">
               <p class="card-header">Storage</p>
               <div class="card-body">
                 <div class="d-flex justify-content-between mb-1 form-inline">
@@ -18,6 +18,7 @@
                       type="number"
                       min="1"
                       [(ngModel)]="mongoCalculator.storageRawDataSize"
+                      (blur)="mongoCalculator.setRamDataSizeIfEmpty($event.target.value)"
                     />
                     <div class="input-group-append">
                       <span class="input-group-text">GB</span>
@@ -26,7 +27,7 @@
                 </div>
                 <div class="d-flex justify-content-between">
                   <div>
-                    <label class="text-right middle">Storage at Rest</label>
+                    <label class="text-right middle">Storage at Rest ({{mongoCalculator.percentageStorageAtRest}}%)</label>
                   </div>
                   <div>
                     <p>{{mongoCalculator.storageAtRestSize}} GB</p>
@@ -34,7 +35,7 @@
                 </div>
                 <div class="d-flex justify-content-between">
                   <div>
-                    <label class="text-right middle">Index storage</label>
+                    <label class="text-right middle">Index storage ({{mongoCalculator.percentageStorageIndexes}}%)</label>
                   </div>
                   <div>
                     <p>{{mongoCalculator.storageIndexesSize}} GB</p>
@@ -43,7 +44,7 @@
                 <div class="d-flex justify-content-between">
                   <div>
                     <label class="text-right middle"
-                      >Journal, Log files etc.</label
+                      >Journal, Log files etc. ({{mongoCalculator.percentageStorageLogs}}%)</label
                     >
                   </div>
                   <div>
@@ -51,7 +52,7 @@
                   </div>
                 </div>
                 <div
-                  class="d-flex justify-content-between alert alert-primary font-weight-bold"
+                  class="d-flex justify-content-between alert alert-success font-weight-bold"
                   role="alert"
                 >
                   <label class="text-right middle"
@@ -61,57 +62,11 @@
                 </div>
               </div>
             </div>
-
-            <div class="card mt-1">
-              <p class="card-header">Ram</p>
-              <div class="card-body">
-                <div class="d-flex justify-content-between mb-1 form-inline">
-                  <label class="text-right middle font-weight-bold"
-                    >Active/Hot data</label
-                  >
-                  <div class="input-group">
-                    <input
-                      class="form-control"
-                      type="number"
-                      min="1"
-                      readonly
-                      [(ngModel)]="mongoCalculator.ramHotDataSize"
-                    />
-                    <div class="input-group-append">
-                      <span class="input-group-text">GB</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle">Working set & Index</label>
-                  </div>
-                  <div>
-                    <p>{{mongoCalculator.ramSetAndIndexSize}} GB</p>
-                  </div>
-                </div>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle">FS Cache</label>
-                  </div>
-                  <div>
-                    <p>{{mongoCalculator.ramCacheSize}} GB</p>
-                  </div>
-                </div>
-                <div
-                  class="d-flex justify-content-between alert alert-primary font-weight-bold"
-                  role="alert"
-                >
-                  <label class="text-right middle">Total RAM required:</label>
-                  <span>{{mongoCalculator.ramTotalRequired}} GB</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div class="ml-2 w-100">
-            <div class="card">
-              <p class="card-header">Cpu</p>
+            <div class="card" style="min-height: 315px">
+              <p class="card-header">Cpu & iops</p>
               <div class="card-body">
                 <div class="d-flex justify-content-between mb-1 form-inline">
                   <label class="text-right middle font-weight-bold"
@@ -130,30 +85,25 @@
                   </div>
                 </div>
                 <div
-                  class="d-flex justify-content-between alert alert-primary font-weight-bold"
+                  class="mt-3 d-flex justify-content-between alert alert-success font-weight-bold"
                   role="alert"
                 >
                   <label class="text-right middle"
-                    >Total CPU Cores required:</label
+                    >Total CPU Cores required ({{mongoCalculator.maxWorkloadEachCpu}} each):</label
                   >
                   <span>{{mongoCalculator.cpuTotalRequired}} Cores</span>
                 </div>
-              </div>
-            </div>
 
-            <div class="card mt-1">
-              <p class="card-header">Iops</p>
-              <div class="card-body">
-                <div class="alert alert-primary font-weight-bold" role="alert">
+                <div class="alert alert-success font-weight-bold" role="alert">
                   <div class="d-flex justify-content-between">
                     <label class="text-right middle"
-                      >Total IOPS required (MIN):</label
+                      >Total IOPS required (MIN) ({{mongoCalculator.percentageIopsMin}}%):</label
                     >
                     <span>{{mongoCalculator.iopsMinTotalRequired}}</span>
                   </div>
                   <div class="d-flex justify-content-between">
                     <label class="text-right middle"
-                      >Total IOPS required (MAX):</label
+                      >Total IOPS required (MAX) ({{mongoCalculator.percentageIopsMax}}%):</label
                     >
                     <span>{{mongoCalculator.iopsMaxTotalRequired}}</span>
                   </div>
@@ -163,76 +113,78 @@
           </div>
 
           <div class="ml-2 w-100">
-            <div class="card">
-              <p class="card-header">Shards</p>
+            <div class="card" style="min-height: 315px">
+              <p class="card-header">Ram</p>
               <div class="card-body">
                 <div class="d-flex justify-content-between mb-1 form-inline">
                   <label class="text-right middle font-weight-bold"
-                    >Instance Type</label
+                    >Active/Hot data</label
                   >
-                  <select
-                    class="form-control"
-                    [(ngModel)]="mongoCalculator.instanceType"
-                    (change)="mongoCalculator.instanceType = $event.target.value; mongoCalculator.compute()"
-                  >
-                    <option
-                      *ngFor="#instanceType of mongoCalculator.getInstanceTypes()"
-                      value="{{instanceType}}"
-                    >
-                      {{instanceType}}
-                    </option>
-                  </select>
-                </div>
-
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle"
-                      ># of shards by Storage</label
-                    >
-                  </div>
-                  <div>
-                    <p>{{mongoCalculator.shardsByStorage}}</p>
+                  <div class="input-group">
+                    <input
+                      class="form-control"
+                      type="number"
+                      min="1"
+                      [(ngModel)]="mongoCalculator.ramHotDataSize"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">GB</span>
+                    </div>
                   </div>
                 </div>
-
                 <div class="d-flex justify-content-between">
                   <div>
-                    <label class="text-right middle"># of shards by RAM</label>
+                    <label class="text-right middle">Working set & Index ({{mongoCalculator.percentageRamSetAndIndex}}%)</label>
                   </div>
                   <div>
-                    <p>{{mongoCalculator.shardsByRam}}</p>
+                    <p>{{mongoCalculator.ramSetAndIndexSize}} GB</p>
                   </div>
                 </div>
-
                 <div class="d-flex justify-content-between">
                   <div>
-                    <label class="text-right middle"
-                      ># of shards by Cores</label
-                    >
+                    <label class="text-right middle">FS Cache ({{mongoCalculator.percentageRamCacheSize}}%)</label>
                   </div>
                   <div>
-                    <p>{{mongoCalculator.shardsByCore}}</p>
-                  </div>
-                </div>
-
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle"># of shards by IOPS</label>
-                  </div>
-                  <div>
-                    <p>{{mongoCalculator.shardsByIops}}</p>
+                    <p>{{mongoCalculator.ramCacheSize}} GB</p>
                   </div>
                 </div>
                 <div
-                  class="d-flex justify-content-between alert alert-primary font-weight-bold"
+                  class="mt-4 d-flex justify-content-between alert alert-success font-weight-bold"
                   role="alert"
                 >
-                  <label class="text-right middle"
-                    >Total shards required:</label
-                  >
-                  <span>{{mongoCalculator.shardsTotalRequired}} Shards</span>
+                  <label class="text-right middle">Total RAM required:</label>
+                  <span>{{mongoCalculator.ramTotalRequired}} GB</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex p-2 justify-content-start">
+          <div class="card ml-2 w-100">
+            <p class="card-header">Shards</p>
+            <div class="card-body">
+              <table class="table table-hover text-center">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="font-weight-bold">Instance Type</th>
+                    <th scope="col"># of shards by Storage</th>
+                    <th scope="col"># of shards by RAM</th>
+                    <th scope="col"># of shards by Cores</th>
+                    <th scope="col"># of shards by IOPS</th>
+                    <th scope="col" class="text text-success font-weight-bold">Total shards required</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="#shard of mongoCalculator.shards">
+                    <td class="font-weight-bold">{{shard.instanceSize}}</td>
+                    <td>{{shard.shardsByStorage}}</td>
+                    <td>{{shard.shardsByRam}}</td>
+                    <td>{{shard.shardsByCore}}</td>
+                    <td>{{shard.shardsByIops}}</td>
+                    <td class="text text-success font-weight-bold">{{shard.shardsTotalRequired}}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
