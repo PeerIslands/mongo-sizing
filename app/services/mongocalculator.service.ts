@@ -180,36 +180,25 @@ export class MongoCalculatorService {
           : 0;
       item.shardsByRam =
         this.ramTotalRequired > 0
-          ? +Number(this.ramTotalRequired / item.ramGb).toFixed(1)
+          ? +Number(this.ramTotalRequired / item.ramGb).toFixed(this.decimalSize)
           : 0;
       item.shardsByCore =
         this.cpuTotalRequired > 0
-          ? +Number(this.cpuTotalRequired / item.vCPUs).toFixed(1)
+          ? +Number(this.cpuTotalRequired / item.vCPUs).toFixed(this.decimalSize)
           : 0;
       item.shardsByIops =
         this.iopsMaxTotalRequired > 0
-          ? +Number(this.iopsMaxTotalRequired / item.maxIops).toFixed(1)
+          ? +Number(this.iopsMaxTotalRequired / item.maxIops).toFixed(this.decimalSize)
           : 0;
-      item.shardsTotalRequired = Math.max(
+      item.shardsTotalRequired = Math.ceil(Math.max(
         item.shardsByStorage,
         item.shardsByRam,
         item.shardsByCore,
         item.shardsByIops
-      );
+      ));
 
       return item;
     });
-  }
-
-  public setRamDataSizeIfEmpty(value: number) {
-    if (isNaN(value)) {
-      return;
-    }
-    if (this.ramHotDataSize > 0) {
-      return;
-    }
-
-    this.ramHotDataSize = value;
   }
 
   get storageRawDataSize() {
@@ -217,6 +206,7 @@ export class MongoCalculatorService {
   }
   set storageRawDataSize(n) {
     this._storageRawDataSize = isNaN(n) ? 0 : Number(n);
+    this.ramHotDataSize = this.storageRawDataSize;
     this.compute();
   }
   get storageAtRestSize() {

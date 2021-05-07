@@ -18,7 +18,6 @@
                       type="number"
                       min="1"
                       [(ngModel)]="mongoCalculator.storageRawDataSize"
-                      (blur)="mongoCalculator.setRamDataSizeIfEmpty($event.target.value)"
                     />
                     <div class="input-group-append">
                       <span class="input-group-text">GB</span>
