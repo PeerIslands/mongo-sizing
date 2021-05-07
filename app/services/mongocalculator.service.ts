@@ -16,22 +16,21 @@ export class MongoCalculatorService {
   public _iopsMinTotalRequired: number;
   public _iopsMaxTotalRequired: number;
 
-  public _instanceType: string;
+  public _shards: Array<any>;
 
-  public _shardsByStorage: number;
-  public _shardsByRam: number;
-  public _shardsByCore: number;
-  public _shardsByIops: number;
-  public _shardsTotalRequired: number;
+  public _percentageStorageAtRest: number;
+  public _percentageStorageIndexes: number;
+  public _percentageStorageLogs: number;
+  public _percentageRamSetAndIndex: number;
+  public _percentageRamCacheSize: number;
+  public _maxWorkloadEachCpu: number;
+  public _percentageIopsMin: number;
+  public _percentageIopsMax: number;
 
-  private percentageStorageAtRest: number = 0.33;
-  private percentageStorageIndexes: number = 0.25;
-  private percentageStorageLogs: number = 0.25;
-  private percentageRamSetAndIndex: number = 0.002;
-  private percentageRamCacheSize: number = 0.002;
-  private maxWorkloadEachCpu: number = 4000;
-  private percentageIopsMin: number = 0.05;
-  private percentageIopsMax: number = 0.8;
+  // 1) show all percentages using label (x %)
+  // 2) DONE allow the user to update Active/Hot data (as default, only 1st time copy from the other field)
+  // 3) add in the left part => Calculator options
+  // 4) change color
 
   private atlasClusterReference = [
     {
@@ -103,12 +102,20 @@ export class MongoCalculatorService {
   private decimalSize: number = 3;
 
   constructor() {
+    this.shards = this.atlasClusterReference;
     this.storageRawDataSize = this.storageAtRestSize = this.storageIndexesSize = this.storageLogsSize = this.storageTotalRequired = 0;
     this.ramHotDataSize = this.ramSetAndIndexSize = this.ramCacheSize = this.ramTotalRequired = 0;
     this.cpuPeakOpsPerSecond = this.cpuTotalRequired = 0;
     this.iopsMinTotalRequired = this.iopsMaxTotalRequired = 0;
-    this.instanceType = "M30";
-    this.shardsByStorage = this.shardsByRam = this.shardsByCore = this.shardsByIops = this.shardsTotalRequired = 0;
+
+    this.percentageStorageAtRest = 33;
+    this.percentageStorageIndexes = 25;
+    this.percentageStorageLogs = 25;
+    this.percentageRamSetAndIndex = 0.2;
+    this.percentageRamCacheSize = 0.2;
+    this.maxWorkloadEachCpu = 4000;
+    this.percentageIopsMin = 5;
+    this.percentageIopsMax = 80;
 
     this.compute();
   }
@@ -118,34 +125,21 @@ export class MongoCalculatorService {
    ** @returns
    */
   public compute() {
-    if (this.storageRawDataSize > 0) {
-      this.computeStorage();
-      this.ramHotDataSize = this.storageRawDataSize;
-    }
-    if (this.ramHotDataSize > 0) {
-      this.computeRam();
-    }
-    if (this.cpuPeakOpsPerSecond > 0) {
-      this.computeCpuAndIops();
-    }
-    if (
-      this.storageRawDataSize > 0 &&
-      this.ramHotDataSize > 0 &&
-      this.cpuPeakOpsPerSecond > 0
-    ) {
-      this.computeShards();
-    }
+    this.computeStorage();
+    this.computeRam();
+    this.computeCpuAndIops();
+    this.computeShards();
   }
 
   private computeStorage() {
     this.storageAtRestSize = +Number(
-      this.storageRawDataSize * this.percentageStorageAtRest
+      this.storageRawDataSize * this.percentageStorageAtRest / 100
     ).toFixed(this.decimalSize);
     this.storageIndexesSize = +Number(
-      this.storageAtRestSize * this.percentageStorageIndexes
+      this.storageAtRestSize * this.percentageStorageIndexes / 100
     ).toFixed(this.decimalSize);
     this.storageLogsSize = +Number(
-      this.storageAtRestSize * this.percentageStorageLogs
+      this.storageAtRestSize * this.percentageStorageLogs / 100
     ).toFixed(this.decimalSize);
     this.storageTotalRequired = +Number(
       this.storageAtRestSize + this.storageIndexesSize + this.storageLogsSize
@@ -154,10 +148,10 @@ export class MongoCalculatorService {
 
   private computeRam() {
     this.ramSetAndIndexSize = +Number(
-      this.ramHotDataSize * this.percentageRamSetAndIndex
+      this.ramHotDataSize * this.percentageRamSetAndIndex / 100
     ).toFixed(this.decimalSize);
     this.ramCacheSize = +Number(
-      this.ramHotDataSize * this.percentageRamCacheSize
+      this.ramHotDataSize * this.percentageRamCacheSize / 100
     ).toFixed(this.decimalSize);
     this.ramTotalRequired = +Number(
       this.ramSetAndIndexSize + this.ramCacheSize
@@ -169,50 +163,60 @@ export class MongoCalculatorService {
       this.cpuPeakOpsPerSecond / this.maxWorkloadEachCpu
     );
     this.iopsMinTotalRequired = +Number(
-      this.cpuPeakOpsPerSecond * this.percentageIopsMin
+      this.cpuPeakOpsPerSecond * this.percentageIopsMin / 100
     ).toFixed(this.decimalSize);
     this.iopsMaxTotalRequired = +Number(
-      this.cpuPeakOpsPerSecond * this.percentageIopsMax
+      this.cpuPeakOpsPerSecond * this.percentageIopsMax / 100
     ).toFixed(this.decimalSize);
   }
 
   private computeShards() {
-    const selectedInstance = this.atlasClusterReference.find(
-      (item) => item.instanceSize === this.instanceType
-    );
-    if (selectedInstance === undefined) {
+    this.shards = this.shards.map((item) => {
+      item.shardsByStorage =
+        this.storageTotalRequired > 0
+          ? +Number(this.storageTotalRequired / item.maxDiskStorageGb).toFixed(
+              1
+            )
+          : 0;
+      item.shardsByRam =
+        this.ramTotalRequired > 0
+          ? +Number(this.ramTotalRequired / item.ramGb).toFixed(1)
+          : 0;
+      item.shardsByCore =
+        this.cpuTotalRequired > 0
+          ? +Number(this.cpuTotalRequired / item.vCPUs).toFixed(1)
+          : 0;
+      item.shardsByIops =
+        this.iopsMaxTotalRequired > 0
+          ? +Number(this.iopsMaxTotalRequired / item.maxIops).toFixed(1)
+          : 0;
+      item.shardsTotalRequired = Math.max(
+        item.shardsByStorage,
+        item.shardsByRam,
+        item.shardsByCore,
+        item.shardsByIops
+      );
+
+      return item;
+    });
+  }
+
+  public setRamDataSizeIfEmpty(value: number) {
+    if (isNaN(value)) {
+      return;
+    }
+    if (this.ramHotDataSize > 0) {
       return;
     }
 
-    this.shardsByStorage = +Number(
-      this.storageTotalRequired / selectedInstance.maxDiskStorageGb
-    ).toFixed(1);
-    this.shardsByRam = +Number(
-      this.ramTotalRequired / selectedInstance.ramGb
-    ).toFixed(1);
-    this.shardsByCore = +Number(
-      this.cpuTotalRequired / selectedInstance.vCPUs
-    ).toFixed(1);
-    this.shardsByIops = +Number(
-      this.iopsMaxTotalRequired / selectedInstance.maxIops
-    ).toFixed(1);
-    this.shardsTotalRequired = Math.max(
-      this.shardsByStorage,
-      this.shardsByRam,
-      this.shardsByCore,
-      this.shardsByIops
-    );
-  }
-
-  public getInstanceTypes() {
-    return this.atlasClusterReference.map((item) => item.instanceSize);
+    this.ramHotDataSize = value;
   }
 
   get storageRawDataSize() {
     return this._storageRawDataSize;
   }
   set storageRawDataSize(n) {
-    this._storageRawDataSize = n;
+    this._storageRawDataSize = isNaN(n) ? 0 : Number(n);
     this.compute();
   }
   get storageAtRestSize() {
@@ -244,7 +248,8 @@ export class MongoCalculatorService {
     return this._ramHotDataSize;
   }
   set ramHotDataSize(n) {
-    this._ramHotDataSize = n;
+    this._ramHotDataSize = isNaN(n) ? 0 : Number(n);
+    this.compute();
   }
   get ramSetAndIndexSize() {
     return this._ramSetAndIndexSize;
@@ -269,7 +274,7 @@ export class MongoCalculatorService {
     return this._cpuPeakOpsPerSecond;
   }
   set cpuPeakOpsPerSecond(n) {
-    this._cpuPeakOpsPerSecond = n;
+    this._cpuPeakOpsPerSecond = isNaN(n) ? 0 : Number(n);
     this.compute();
   }
   get cpuTotalRequired() {
@@ -292,41 +297,59 @@ export class MongoCalculatorService {
     this._iopsMaxTotalRequired = n;
   }
 
-  get instanceType() {
-    return this._instanceType;
+  get shards() {
+    return this._shards;
   }
-  set instanceType(n) {
-    this._instanceType = n;
-    this.compute();
+  set shards(n) {
+    this._shards = n;
   }
-  get shardsByStorage() {
-    return this._shardsByStorage;
+
+  get percentageStorageAtRest() {
+    return this._percentageStorageAtRest;
   }
-  set shardsByStorage(n) {
-    this._shardsByStorage = n;
+  set percentageStorageAtRest(n) {
+    this._percentageStorageAtRest = n;
   }
-  get shardsByRam() {
-    return this._shardsByRam;
+  get percentageStorageIndexes() {
+    return this._percentageStorageIndexes;
   }
-  set shardsByRam(n) {
-    this._shardsByRam = n;
+  set percentageStorageIndexes(n) {
+    this._percentageStorageIndexes = n;
   }
-  get shardsByCore() {
-    return this._shardsByCore;
+  get percentageStorageLogs() {
+    return this._percentageStorageLogs;
   }
-  set shardsByCore(n) {
-    this._shardsByCore = n;
+  set percentageStorageLogs(n) {
+    this._percentageStorageLogs = n;
   }
-  get shardsByIops() {
-    return this._shardsByIops;
+  get percentageRamSetAndIndex() {
+    return this._percentageRamSetAndIndex;
   }
-  set shardsByIops(n) {
-    this._shardsByIops = n;
+  set percentageRamSetAndIndex(n) {
+    this._percentageRamSetAndIndex = n;
   }
-  get shardsTotalRequired() {
-    return this._shardsTotalRequired;
+  get percentageRamCacheSize() {
+    return this._percentageRamCacheSize;
   }
-  set shardsTotalRequired(n) {
-    this._shardsTotalRequired = n;
+  set percentageRamCacheSize(n) {
+    this._percentageRamCacheSize = n;
+  }
+  get maxWorkloadEachCpu() {
+    return this._maxWorkloadEachCpu;
+  }
+  set maxWorkloadEachCpu(n) {
+    this._maxWorkloadEachCpu = n;
+  }
+  get percentageIopsMin() {
+    return this._percentageIopsMin;
+  }
+  set percentageIopsMin(n) {
+    this._percentageIopsMin = n;
+  }
+  get percentageIopsMax() {
+    return this._percentageIopsMax;
+  }
+  set percentageIopsMax(n) {
+    this._percentageIopsMax = n;
   }
 }
