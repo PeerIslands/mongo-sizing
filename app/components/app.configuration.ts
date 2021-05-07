@@ -6,7 +6,7 @@ import {MongoService} from '/app/services/mongo.service';
     templateUrl: '/app/templates/app.configuration.html'
 })
 export class ConfigurationComponent {
-  compressions: string[] =  ["snappy", "zlib", "none"]
+  compressions: string[] =  ["snappy", "zlib","zstd", "none"]
   engines: string[] = ["wiredTiger", "mmapv1"]
   shards: int = 1
   oplog: int = 50

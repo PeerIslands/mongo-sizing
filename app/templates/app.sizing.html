@@ -33,6 +33,51 @@
     </div>
   </div>
   <div class="card mt-2 w-100">
+    <p class="card-header">Summary</p>
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Total Estd No of Documents</th>
+            <th scope="col">Total Estd Documents in memory</th>
+            <th scope="col">Total Estd No of indexes</th>
+            <th scope="col">Total Avg Documents size</th>
+            <th scope="col">Total Estd data size</th>
+            <th scope="col">Total Estd index size</th>
+            <th scope="col">Total Estd storage size</th>
+            <th scope="col">Total Estd memory requirements</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{mongo.summary.totalDocuments | number}}</td>
+            <td>{{mongo.summary.totalDocumentsInMemory | number}}</td>
+            <td>{{mongo.summary.totalIndexes | number}}</td>
+            <td>{{mongo.formatSize(mongo.summary.totalAverageDocumentSize)}}</td>
+            <td>{{mongo.formatSize(mongo.summary.totalDataSize)}}</td>
+            <td>{{mongo.formatSize(mongo.summary.totalIndexSize)}}</td>
+            <td>{{mongo.formatSize(mongo.summary.totalStorageSize)}}</td>
+            <td>{{mongo.formatSize(mongo.summary.totalMemoryRequirement)}}</td>
+          </tr>
+        </tbody>
+        <!-- <tfoot>
+          <tr></tr>
+          <tr class="table-success" style="font-weight:bold">
+            <th>All</th>
+            <th>{{totalDocuments | number}}</th>
+            <th>{{totalDocumentsInMemory | number}}</th>
+            <th>{{totalIndexes | number}}</th>
+            <th>{{mongo.formatSize(totalAverageDocumentSize)}}</th>
+            <th>{{mongo.formatSize(totalDataSize)}}</th>
+            <th>{{mongo.formatSize(totalIndexSize)}}</th>
+            <th>{{mongo.formatSize(totalStorageSize)}}</th>
+            <th>{{mongo.formatSize(totalMemoryRequirement)}}</th>
+          </tr>
+        </tfoot> -->
+      </table>
+    </div>
+  </div>
+  <div class="card mt-2 w-100">
     <p class="card-header">Shard Details</p>
     <div class="card-body">
       <table class="table table-striped">
@@ -62,3 +107,4 @@
     </div>
   </div>
 </div>
+

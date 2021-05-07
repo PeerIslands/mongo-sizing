@@ -55,6 +55,7 @@ export class MongoCollection {
 
     this.totalStorageSize = this.storageSize + this.indexStorageSize
     this.memoryRequirement += this.numberOfDocumentInMemory * this.averageDocumentSize
+    service.computeSummary();
   }
 
   public validate() {
@@ -120,7 +121,5 @@ export class MongoCollection {
     this._numberOfDocumentInMemory = n
     this.compute(this.service)
   }
-
-
 }
 

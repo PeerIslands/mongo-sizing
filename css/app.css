@@ -18,6 +18,15 @@ a:hover {
   padding: 15px 1rem;
 }
 
+nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+  border-color: transparent;
+  color: green;
+}
+
+.config-header {
+  box-shadow: 1px 2px 4px 0 rgb(0 0 0 / 10%);
+}
+
 .card-header,
 .config-header {
   background-color: transparent;
@@ -57,6 +66,12 @@ button.list-group-item.list-group-item-action {
   margin: auto;
 }
 
+.tab-content {
+  height: calc(100vh - 120px);
+  overflow: auto;
+}
+
+
 .peerislands-logo {
   border-right: 1px solid #bbbb7f;
 }
@@ -70,4 +85,8 @@ td {
   .modal-dialog {
     max-width: 700px;
   }
+}
+
+.document-html {
+  white-space: break-spaces;
 }

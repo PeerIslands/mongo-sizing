@@ -7,9 +7,10 @@ export class MongoService {
   public _compression: string;
   public _oplog: int;
   public collections: Observable<Array<MongoCollection>>;
-
+  public summary: Summary;
 
   constructor() {
+    this.summary = { totalAverageDocumentSize:0 ,totalDataSize : 0,totalDocuments:0,totalDocumentsInMemory:0,totalIndexSize:0,totalIndexes:0,totalMemoryRequirement:0,totalStorageSize:0}
     this.collections = []
     this.engine = "wiredTiger"
     this.compression = "snappy"
@@ -59,6 +60,8 @@ export class MongoService {
     // Adding the oplog information
     this.storageSize += this.getCompressedSize(this.oplog * 1024 * 1024 * 1024 * this.shards)
     this.dataSize += this.oplog * 1024 * 1024 * 1024 * this.shards
+
+    this.computeSummary();
   }
 
   /**
@@ -98,6 +101,7 @@ export class MongoService {
   /**
    ** @brief return the size according to the block compressor used
    ** Currently hard coded, snappy / 3, zlib / 4, none / 0.95 (overhead)
+   ** Currently hard coded, snappy / 3, zlib / 4, zlib / 5, none / 0.95 (overhead)
    ** @returns
    */
   public getCompressedSize(size: int) {
@@ -106,6 +110,7 @@ export class MongoService {
     } else {
       if (this.compression == "snappy") { return Number(Number(size / 3).toFixed(0)) }
       else if (this.compression == "zlib") { return Number(Number(size / 4).toFixed(0)) }
+      else if (this.compression == "zstd") { return Number(Number(size / 5).toFixed(0)) }
       else { return Number(Number(size * 1.05).toFixed(0)) }
     }
   }
@@ -177,6 +182,57 @@ export class MongoService {
     this._compression = n
     this.compute()
   }
+  computeSummary() {
+    if(this.collections.length > 0) {
+      this.summary.totalDocuments = this.collections
+      .map((a) => a.numberOfDocument)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+
+      this.summary.totalDocumentsInMemory = this.collections
+      .map((a) => a.numberOfDocumentInMemory)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+
+      this.summary.totalIndexes = this.collections
+      .map((a) => a.indexes.length)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+
+      this.summary.totalAverageDocumentSize = this.collections
+      .map((a) => a.averageDocumentSize)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+
+      this.summary.totalDataSize = this.collections
+      .map((a) => a.dataSize)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+
+      this.summary.totalIndexSize = this.collections
+      .map((a) => a.indexSize)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+
+      this.summary.totalStorageSize = this.collections
+      .map((a) => a.storageSize)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+
+      this.summary.totalMemoryRequirement = this.collections
+      .map((a) => a.memoryRequirement)
+      .reduce(function (a, b) {
+        return a + b;
+      });
+    }
+  }
 }
 
 
@@ -219,4 +275,16 @@ export function deserializeAttribute(value) {
   }
 
   return value
+}
+
+interface Summary {
+  totalDocuments:number;
+  totalDocumentsInMemory: number;
+  totalIndexes:number;
+  totalAverageDocumentSize:number;
+
+  totalDataSize:number;
+  totalIndexSize:number;
+  totalStorageSize:number;
+  totalMemoryRequirement:number;
 }
