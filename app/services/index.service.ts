@@ -89,4 +89,4 @@ export class MongoIndex {
       }
     }
 }
-
+}
