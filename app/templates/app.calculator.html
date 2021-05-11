@@ -5,7 +5,7 @@
       <div class="calculator">
         <div class="d-flex p-2 justify-content-start">
           <div class="ml-2 w-100">
-            <div class="card" style="min-height: 315px">
+            <div class="card calculator-card">
               <p class="card-header">Storage</p>
               <div class="card-body">
                 <div class="d-flex justify-content-between mb-1 form-inline">
@@ -14,57 +14,116 @@
                   >
                   <div class="input-group">
                     <input
-                      class="form-control"
+                      class="form-control {{mongoCalculator.storageRawDataSizeGB > 0 ? 'is-valid' : 'is-invalid'}}"
                       type="number"
                       min="1"
-                      [(ngModel)]="mongoCalculator.storageRawDataSize"
+                      [(ngModel)]="mongoCalculator.storageRawDataSizeGB"
                     />
                     <div class="input-group-append">
-                      <span class="input-group-text">GB</span>
+                      <span class="input-group-text alert-success">GB</span>
                     </div>
                   </div>
                 </div>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle">Storage at Rest ({{mongoCalculator.percentageStorageAtRest}}%)</label>
-                  </div>
-                  <div>
-                    <p>{{mongoCalculator.storageAtRestSize}} GB</p>
-                  </div>
+                <div class="form-check text-right mb-1">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    id="copyRamHotDataSizeGBFromStorageRawDataSizeGB"
+                    [(ngModel)]="mongoCalculator.copyRamHotDataSizeGBFromStorageRawDataSizeGB"
+                  />
+                  <label
+                    class="form-check-label text-right"
+                    for="copyRamHotDataSizeGBFromStorageRawDataSizeGB"
+                  >
+                    Copy same value to field <em>RAM: Active/Hot data</em>
+                  </label>
                 </div>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle">Index storage ({{mongoCalculator.percentageStorageIndexes}}%)</label>
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-4">
+                    <label class="text-center middle">Storage at rest</label>
                   </div>
-                  <div>
-                    <p>{{mongoCalculator.storageIndexesSize}} GB</p>
+                  <div class="input-group input-group-sm col-md-4">
+                    <input
+                      class="form-control {{mongoCalculator.percentageStorageAtRest > 0 ? '' : 'is-invalid'}}"
+                      type="number"
+                      min="1"
+                      max="100"
+                      [(ngModel)]="mongoCalculator.percentageStorageAtRest"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
                   </div>
+                  <span class="col-md-4">
+                    {{mongoService.formatSize(mongoCalculator.storageAtRestSize)}}
+                  </span>
                 </div>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle"
-                      >Journal, Log files etc. ({{mongoCalculator.percentageStorageLogs}}%)</label
-                    >
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-4">
+                    <label class="text-center middle">Index storage</label>
                   </div>
-                  <div>
-                    <p>{{mongoCalculator.storageLogsSize}} GB</p>
+                  <div class="input-group input-group-sm col-md-4">
+                    <input
+                      class="form-control"
+                      type="number"
+                      min="0"
+                      max="100"
+                      [(ngModel)]="mongoCalculator.percentageStorageIndexes"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
                   </div>
+                  <span class="col-md-4"
+                    >{{mongoService.formatSize(mongoCalculator.storageIndexesSize)}}</span
+                  >
+                </div>
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-4">
+                    <label class="text-center middle">Journal, Log files</label>
+                  </div>
+                  <div class="input-group input-group-sm col-md-4">
+                    <input
+                      class="form-control"
+                      type="number"
+                      min="0"
+                      max="100"
+                      [(ngModel)]="mongoCalculator.percentageStorageLogs"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
+                  </div>
+                  <span class="col-md-4"
+                    >{{mongoService.formatSize(mongoCalculator.storageLogsSize)}}</span
+                  >
                 </div>
                 <div
-                  class="d-flex justify-content-between alert alert-success font-weight-bold"
+                  class="
+                    d-flex
+                    justify-content-between
+                    alert alert-success
+                    font-weight-bold
+                    p-1
+                    m-0
+                    pl-3
+                    pr-3
+                  "
                   role="alert"
                 >
-                  <label class="text-right middle"
+                  <label class="text-right middle m-0"
                     >Total Disk storage required:</label
                   >
-                  <span>{{mongoCalculator.storageTotalRequired}} GB</span>
+                  <span
+                    >{{mongoService.formatSize(mongoCalculator.storageTotalRequired)}}</span
+                  >
                 </div>
               </div>
             </div>
           </div>
 
           <div class="ml-2 w-100">
-            <div class="card" style="min-height: 315px">
+            <div class="card calculator-card">
               <p class="card-header">Cpu & iops</p>
               <div class="card-body">
                 <div class="d-flex justify-content-between mb-1 form-inline">
@@ -73,36 +132,94 @@
                   >
                   <div class="input-group">
                     <input
-                      class="form-control"
+                      class="form-control {{mongoCalculator.cpuPeakOpsPerSecond > 0 ? 'is-valid' : 'is-invalid'}}"
                       type="number"
                       min="1"
                       [(ngModel)]="mongoCalculator.cpuPeakOpsPerSecond"
                     />
                     <div class="input-group-append">
-                      <span class="input-group-text">Ops/second</span>
+                      <span class="input-group-text alert-success"
+                        >Ops/sec.</span
+                      >
                     </div>
                   </div>
                 </div>
-                <div
-                  class="mt-3 d-flex justify-content-between alert alert-success font-weight-bold"
-                  role="alert"
-                >
-                  <label class="text-right middle"
-                    >Total CPU Cores required ({{mongoCalculator.maxWorkloadEachCpu}} each):</label
-                  >
-                  <span>{{mongoCalculator.cpuTotalRequired}} Cores</span>
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-7">
+                    <label class="text-center middle"
+                      >Maximum DB workload/CPU</label
+                    >
+                  </div>
+                  <div class="input-group input-group-sm col-md-5">
+                    <input
+                      class="form-control {{mongoCalculator.maxWorkloadEachCpu > 0 ? '' : 'is-invalid'}}"
+                      type="number"
+                      min="1"
+                      [(ngModel)]="mongoCalculator.maxWorkloadEachCpu"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">each</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-8">
+                    <label class="text-center middle"
+                      >Minimum write operations/second</label
+                    >
+                  </div>
+                  <div class="input-group input-group-sm col-md-4">
+                    <input
+                      class="form-control"
+                      type="number"
+                      min="1"
+                      max="100"
+                      [(ngModel)]="mongoCalculator.percentageIopsMin"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-8">
+                    <label class="text-center middle"
+                      >Maximum write operations/second</label
+                    >
+                  </div>
+                  <div class="input-group input-group-sm col-md-4">
+                    <input
+                      class="form-control"
+                      type="number"
+                      min="1"
+                      max="100"
+                      [(ngModel)]="mongoCalculator.percentageIopsMax"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div class="alert alert-success font-weight-bold" role="alert">
+                <div
+                  class="alert alert-success font-weight-bold p-1 m-0 pl-3 pr-3"
+                  role="alert"
+                >
                   <div class="d-flex justify-content-between">
                     <label class="text-right middle"
-                      >Total IOPS required (MIN) ({{mongoCalculator.percentageIopsMin}}%):</label
+                      >Total CPU Cores required:</label
+                    >
+                    <span>{{mongoCalculator.cpuTotalRequired}}</span>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label class="text-right middle"
+                      >Total IOPS required (MIN):</label
                     >
                     <span>{{mongoCalculator.iopsMinTotalRequired}}</span>
                   </div>
                   <div class="d-flex justify-content-between">
-                    <label class="text-right middle"
-                      >Total IOPS required (MAX) ({{mongoCalculator.percentageIopsMax}}%):</label
+                    <label class="text-right middle m-0"
+                      >Total IOPS required (MAX):</label
                     >
                     <span>{{mongoCalculator.iopsMaxTotalRequired}}</span>
                   </div>
@@ -112,7 +229,7 @@
           </div>
 
           <div class="ml-2 w-100">
-            <div class="card" style="min-height: 315px">
+            <div class="card calculator-card">
               <p class="card-header">Ram</p>
               <div class="card-body">
                 <div class="d-flex justify-content-between mb-1 form-inline">
@@ -121,38 +238,80 @@
                   >
                   <div class="input-group">
                     <input
-                      class="form-control"
+                      class="form-control {{mongoCalculator.ramHotDataSizeGB > 0 ? 'is-valid' : 'is-invalid'}}"
                       type="number"
                       min="1"
-                      [(ngModel)]="mongoCalculator.ramHotDataSize"
+                      [(ngModel)]="mongoCalculator.ramHotDataSizeGB"
                     />
                     <div class="input-group-append">
-                      <span class="input-group-text">GB</span>
+                      <span class="input-group-text alert-success">GB</span>
                     </div>
                   </div>
                 </div>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle">Working set & Index ({{mongoCalculator.percentageRamSetAndIndex}}%)</label>
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-4">
+                    <label class="text-center middle"
+                      >Working set & Index</label
+                    >
                   </div>
-                  <div>
-                    <p>{{mongoCalculator.ramSetAndIndexSize}} GB</p>
+                  <div class="input-group input-group-sm col-md-4">
+                    <input
+                      class="form-control"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      [(ngModel)]="mongoCalculator.percentageRamSetAndIndex"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
                   </div>
+                  <span class="col-md-4"
+                    >{{mongoService.formatSize(mongoCalculator.ramSetAndIndexSize)}}</span
+                  >
                 </div>
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <label class="text-right middle">FS Cache ({{mongoCalculator.percentageRamCacheSize}}%)</label>
+                <div class="d-flex justify-content-between mb-1 form-inline">
+                  <div class="col-md-4">
+                    <label class="text-center middle">FS Cache</label>
                   </div>
-                  <div>
-                    <p>{{mongoCalculator.ramCacheSize}} GB</p>
+                  <div class="input-group input-group-sm col-md-4">
+                    <input
+                      class="form-control"
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="0.1"
+                      [(ngModel)]="mongoCalculator.percentageRamCacheSize"
+                    />
+                    <div class="input-group-append">
+                      <span class="input-group-text">%</span>
+                    </div>
                   </div>
+                  <span class="col-md-4"
+                    >{{mongoService.formatSize(mongoCalculator.ramCacheSize)}}</span
+                  >
                 </div>
                 <div
-                  class="mt-4 d-flex justify-content-between alert alert-success font-weight-bold"
+                  class="
+                    mt-4
+                    d-flex
+                    justify-content-between
+                    alert alert-success
+                    font-weight-bold
+                    p-1
+                    mt-4
+                    pl-3
+                    pr-3
+                  "
                   role="alert"
                 >
-                  <label class="text-right middle">Total RAM required:</label>
-                  <span>{{mongoCalculator.ramTotalRequired}} GB</span>
+                  <label class="text-center middle m-0"
+                    >Total RAM required:</label
+                  >
+                  <span
+                    >{{mongoService.formatSize(mongoCalculator.ramTotalRequired)}}</span
+                  >
                 </div>
               </div>
             </div>
@@ -170,7 +329,9 @@
                     <th scope="col"># of shards by RAM</th>
                     <th scope="col"># of shards by Cores</th>
                     <th scope="col"># of shards by IOPS</th>
-                    <th scope="col" class="text text-success font-weight-bold">Total shards required</th>
+                    <th scope="col" class="text text-success font-weight-bold">
+                      Total shards required
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -180,7 +341,9 @@
                     <td>{{shard.shardsByRam}}</td>
                     <td>{{shard.shardsByCore}}</td>
                     <td>{{shard.shardsByIops}}</td>
-                    <td class="text text-success font-weight-bold">{{shard.shardsTotalRequired}}</td>
+                    <td class="text text-success font-weight-bold">
+                      {{shard.shardsTotalRequired}}
+                    </td>
                   </tr>
                 </tbody>
               </table>

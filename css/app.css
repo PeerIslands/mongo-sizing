@@ -90,3 +90,7 @@ td {
 .document-html {
   white-space: break-spaces;
 }
+
+.calculator-card {
+  min-height: 324px
+}
