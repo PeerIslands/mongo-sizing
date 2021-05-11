@@ -14,10 +14,10 @@
                   >
                   <div class="input-group">
                     <input
-                      class="form-control {{mongoCalculator.storageRawDataSizeGB > 0 ? 'is-valid' : 'is-invalid'}}"
+                      class="form-control {{mongoCalculator.storageRawDataSize > 0 ? 'is-valid' : 'is-invalid'}}"
                       type="number"
                       min="1"
-                      [(ngModel)]="mongoCalculator.storageRawDataSizeGB"
+                      [(ngModel)]="mongoCalculator.storageRawDataSize"
                     />
                     <div class="input-group-append">
                       <span class="input-group-text alert-success">GB</span>
@@ -41,7 +41,7 @@
                     </div>
                   </div>
                   <span class="col-md-4">
-                    {{mongoService.formatSize(mongoCalculator.storageAtRestSize)}}
+                    {{mongoCalculator.storageAtRestSize}} GB
                   </span>
                 </div>
                 <div class="d-flex justify-content-between mb-1 form-inline">
@@ -61,7 +61,7 @@
                     </div>
                   </div>
                   <span class="col-md-4"
-                    >{{mongoService.formatSize(mongoCalculator.storageIndexesSize)}}</span
+                    >{{mongoCalculator.storageIndexesSize}} GB</span
                   >
                 </div>
                 <div class="d-flex justify-content-between mb-1 form-inline">
@@ -81,7 +81,7 @@
                     </div>
                   </div>
                   <span class="col-md-4"
-                    >{{mongoService.formatSize(mongoCalculator.storageLogsSize)}}</span
+                    >{{mongoCalculator.storageLogsSize}} GB</span
                   >
                 </div>
                 <div
@@ -101,7 +101,7 @@
                     >Total Disk storage required:</label
                   >
                   <span
-                    >{{mongoService.formatSize(mongoCalculator.storageTotalRequired)}}</span
+                    >{{mongoCalculator.storageTotalRequired}} GB</span
                   >
                 </div>
               </div>
@@ -224,11 +224,11 @@
                   >
                   <div class="input-group">
                     <input
-                      class="form-control {{mongoCalculator.ramHotDataSizeGB > 0 ? 'is-valid' : 'is-invalid'}}"
+                      class="form-control {{mongoCalculator.ramHotDataSize > 0 ? 'is-valid' : 'is-invalid'}}"
                       type="number"
                       min="1"
-                      [disabled]="mongoCalculator.copyRamHotDataSizeGBFromStorageRawDataSizeGB"
-                      [(ngModel)]="mongoCalculator.ramHotDataSizeGB"
+                      [disabled]="mongoCalculator.copyRamHotDataSizeFromStorageRawDataSize"
+                      [(ngModel)]="mongoCalculator.ramHotDataSize"
                     />
                     <div class="input-group-append">
                       <span class="input-group-text alert-success">GB</span>
@@ -239,12 +239,12 @@
                   <input
                     type="checkbox"
                     class="form-check-input"
-                    id="copyRamHotDataSizeGBFromStorageRawDataSizeGB"
-                    [(ngModel)]="mongoCalculator.copyRamHotDataSizeGBFromStorageRawDataSizeGB"
+                    id="copyRamHotDataSizeFromStorageRawDataSize"
+                    [(ngModel)]="mongoCalculator.copyRamHotDataSizeFromStorageRawDataSize"
                   />
                   <label
                     class="form-check-label text-right"
-                    for="copyRamHotDataSizeGBFromStorageRawDataSizeGB"
+                    for="copyRamHotDataSizeFromStorageRawDataSize"
                   >
                     Copy from field <em>STORAGE: Raw data size</em>
                   </label>
@@ -269,7 +269,7 @@
                     </div>
                   </div>
                   <span class="col-md-4"
-                    >{{mongoService.formatSize(mongoCalculator.ramSetAndIndexSize)}}</span
+                    >{{mongoCalculator.ramSetAndIndexSize}} GB</span
                   >
                 </div>
                 <div class="d-flex justify-content-between mb-1 form-inline">
@@ -290,7 +290,7 @@
                     </div>
                   </div>
                   <span class="col-md-4"
-                    >{{mongoService.formatSize(mongoCalculator.ramCacheSize)}}</span
+                    >{{mongoCalculator.ramCacheSize}} GB</span
                   >
                 </div>
                 <div
@@ -310,7 +310,7 @@
                     >Total RAM required:</label
                   >
                   <span
-                    >{{mongoService.formatSize(mongoCalculator.ramTotalRequired)}}</span
+                    >{{mongoCalculator.ramTotalRequired}} GB</span
                   >
                 </div>
               </div>

@@ -1,11 +1,11 @@
 export class MongoCalculatorService {
-  public _storageRawDataSizeGB: number;
+  public _storageRawDataSize: number;
   public _storageAtRestSize: number;
   public _storageIndexesSize: number;
   public _storageLogsSize: number;
   public _storageTotalRequired: number;
 
-  public _ramHotDataSizeGB: number;
+  public _ramHotDataSize: number;
   public _ramSetAndIndexSize: number;
   public _ramCacheSize: number;
   public _ramTotalRequired: number;
@@ -27,7 +27,7 @@ export class MongoCalculatorService {
   public _percentageIopsMin: number;
   public _percentageIopsMax: number;
 
-  public _copyRamHotDataSizeGBFromStorageRawDataSizeGB: boolean;
+  public _copyRamHotDataSizeFromStorageRawDataSize: boolean;
 
   private atlasClusterReference = [
     {
@@ -100,20 +100,20 @@ export class MongoCalculatorService {
 
   constructor() {
     this.shards = this.atlasClusterReference;
-    this._storageRawDataSizeGB =
+    this._storageRawDataSize =
       this._storageAtRestSize =
       this._storageIndexesSize =
       this._storageLogsSize =
       this._storageTotalRequired =
         0;
-    this._ramHotDataSizeGB =
+    this._ramHotDataSize =
       this._ramSetAndIndexSize =
       this._ramCacheSize =
       this._ramTotalRequired =
         0;
     this._cpuPeakOpsPerSecond = this._cpuTotalRequired = 0;
     this._iopsMinTotalRequired = this._iopsMaxTotalRequired = 0;
-    this._copyRamHotDataSizeGBFromStorageRawDataSizeGB = true;
+    this._copyRamHotDataSizeFromStorageRawDataSize = true;
 
     this._percentageStorageAtRest = 33;
     this._percentageStorageIndexes = 25;
@@ -140,7 +140,7 @@ export class MongoCalculatorService {
 
   private computeStorage() {
     this.storageAtRestSize = +Number(
-      (this.fromGigabytesToBytes(this.storageRawDataSizeGB) *
+      (this.storageRawDataSize *
         this.percentageStorageAtRest) /
         100
     ).toFixed(this.decimalSize);
@@ -157,12 +157,12 @@ export class MongoCalculatorService {
 
   private computeRam() {
     this.ramSetAndIndexSize = +Number(
-      (this.fromGigabytesToBytes(this.ramHotDataSizeGB) *
+      (this.ramHotDataSize *
         this.percentageRamSetAndIndex) /
         100
     ).toFixed(this.decimalSize);
     this.ramCacheSize = +Number(
-      (this.fromGigabytesToBytes(this.ramHotDataSizeGB) *
+      (this.ramHotDataSize *
         this.percentageRamCacheSize) /
         100
     ).toFixed(this.decimalSize);
@@ -189,14 +189,14 @@ export class MongoCalculatorService {
       item.shardsByStorage =
         this.storageTotalRequired > 0
           ? +Number(
-              this.fromBytesToGigabytes(this.storageTotalRequired) /
+              this.storageTotalRequired /
                 item.maxDiskStorageGb
             ).toFixed(1)
           : 0;
       item.shardsByRam =
         this.ramTotalRequired > 0
           ? +Number(
-              this.fromBytesToGigabytes(this.ramTotalRequired) / item.ramGb
+              this.ramTotalRequired / item.ramGb
             ).toFixed(this.decimalSize)
           : 0;
       item.shardsByCore =
@@ -232,13 +232,13 @@ export class MongoCalculatorService {
     return Number(value) / (1024 * 1024 * 1024);
   }
 
-  get storageRawDataSizeGB() {
-    return this._storageRawDataSizeGB;
+  get storageRawDataSize() {
+    return this._storageRawDataSize;
   }
-  set storageRawDataSizeGB(n) {
-    this._storageRawDataSizeGB = isNaN(n) ? 0 : Number(n);
-    if (this.copyRamHotDataSizeGBFromStorageRawDataSizeGB) {
-      this._ramHotDataSizeGB = this._storageRawDataSizeGB;
+  set storageRawDataSize(n) {
+    this._storageRawDataSize = isNaN(n) ? 0 : Number(n);
+    if (this.copyRamHotDataSizeFromStorageRawDataSize) {
+      this._ramHotDataSize = this._storageRawDataSize;
     }
     this.compute();
   }
@@ -267,11 +267,11 @@ export class MongoCalculatorService {
     this._storageTotalRequired = n;
   }
 
-  get ramHotDataSizeGB() {
-    return this._ramHotDataSizeGB;
+  get ramHotDataSize() {
+    return this._ramHotDataSize;
   }
-  set ramHotDataSizeGB(n) {
-    this._ramHotDataSizeGB = isNaN(n) ? 0 : Number(n);
+  set ramHotDataSize(n) {
+    this._ramHotDataSize = isNaN(n) ? 0 : Number(n);
     this.compute();
   }
   get ramSetAndIndexSize() {
@@ -383,13 +383,13 @@ export class MongoCalculatorService {
     this._percentageIopsMax = isNaN(n) ? 0 : Number(n);
     this.compute();
   }
-  get copyRamHotDataSizeGBFromStorageRawDataSizeGB() {
-    return this._copyRamHotDataSizeGBFromStorageRawDataSizeGB;
+  get copyRamHotDataSizeFromStorageRawDataSize() {
+    return this._copyRamHotDataSizeFromStorageRawDataSize;
   }
-  set copyRamHotDataSizeGBFromStorageRawDataSizeGB(n) {
-    this._copyRamHotDataSizeGBFromStorageRawDataSizeGB = Boolean(n);
-    if (this._copyRamHotDataSizeGBFromStorageRawDataSizeGB) {
-      this._ramHotDataSizeGB = this._storageRawDataSizeGB;
+  set copyRamHotDataSizeFromStorageRawDataSize(n) {
+    this._copyRamHotDataSizeFromStorageRawDataSize = Boolean(n);
+    if (this._copyRamHotDataSizeFromStorageRawDataSize) {
+      this._ramHotDataSize = this._storageRawDataSize;
       this.compute();
     }
   }
